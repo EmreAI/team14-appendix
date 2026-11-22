@@ -8840,7 +8840,7 @@ Attack       #4 · €118m  #2 · €149m   #6 · €197m  #4 · €298m  #8 · 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p><strong>Slide 11.</strong> Baseline for the KPI "at least 6 points in the group stage": Portugal's group-stage points (3 per win, 1 per draw).</p>
+<p><strong>Slide 11.</strong> Baseline for the target "finish first in the group": Portugal's group place and the round it reached at each World Cup (group place from points, goal difference and goals).</p>
 </div>
 </div>
 </div>
@@ -8852,13 +8852,11 @@ Attack       #4 · €118m  #2 · €149m   #6 · €197m  #4 · €298m  #8 · 
 <div class="jp-InputPrompt jp-InputArea-prompt">In [20]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="n">gm</span> <span class="o">=</span> <span class="n">M</span><span class="p">[(</span><span class="n">M</span><span class="o">.</span><span class="n">phase</span> <span class="o">==</span> <span class="s1">'Group'</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">((</span><span class="n">M</span><span class="o">.</span><span class="n">team_1</span> <span class="o">==</span> <span class="s1">'POR'</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">team_2</span> <span class="o">==</span> <span class="s1">'POR'</span><span class="p">))]</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">pts</span><span class="p">(</span><span class="n">r</span><span class="p">):</span>
-    <span class="n">me</span><span class="p">,</span> <span class="n">op</span> <span class="o">=</span> <span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">score_1</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">score_2</span><span class="p">)</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">team_1</span> <span class="o">==</span> <span class="s1">'POR'</span> <span class="k">else</span> <span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">score_2</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">score_1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="mi">3</span> <span class="k">if</span> <span class="n">me</span> <span class="o">&gt;</span> <span class="n">op</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">me</span> <span class="o">==</span> <span class="n">op</span> <span class="k">else</span> <span class="mi">0</span>
-<span class="n">points</span> <span class="o">=</span> <span class="n">gm</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">pts</span><span class="o">=</span><span class="n">gm</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">pts</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'year'</span><span class="p">)</span><span class="o">.</span><span class="n">pts</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
-<span class="k">assert</span> <span class="n">points</span><span class="p">[</span><span class="mi">2022</span><span class="p">]</span> <span class="o">==</span> <span class="mi">6</span> <span class="ow">and</span> <span class="n">points</span><span class="p">[</span><span class="mi">2026</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">por_g</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="n">T</span><span class="o">.</span><span class="n">code</span> <span class="o">==</span> <span class="s1">'POR'</span><span class="p">]</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'year'</span><span class="p">)[[</span><span class="s1">'group_place'</span><span class="p">,</span> <span class="s1">'stage'</span><span class="p">,</span> <span class="s1">'stage_n'</span><span class="p">]]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">por_g</span><span class="p">[[</span><span class="s1">'group_place'</span><span class="p">,</span> <span class="s1">'stage'</span><span class="p">]]</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
+<span class="k">assert</span> <span class="n">por_g</span><span class="o">.</span><span class="n">group_place</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">por_g</span><span class="p">[</span><span class="n">por_g</span><span class="o">.</span><span class="n">group_place</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">stage_n</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>    <span class="c1"># won the group: quarter-final or further (2006, 2022)</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">por_g</span><span class="p">[</span><span class="n">por_g</span><span class="o">.</span><span class="n">group_place</span> <span class="o">==</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">stage_n</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>     <span class="c1"># finished second: out before the quarter-final (2010, 2018, 2026)</span>
 </pre></div>
 </div>
 </div>
@@ -8871,13 +8869,14 @@ Attack       #4 · €118m  #2 · €149m   #6 · €197m  #4 · €298m  #8 · 
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
 <div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>year
-2006    9
-2010    5
-2014    4
-2018    5
-2022    6
-2026    5
+<pre>      group_place          stage
+year                            
+2006            1     Semi-final
+2010            2    Round of 16
+2014            3    Group stage
+2018            2    Round of 16
+2022            1  Quarter-final
+2026            2    Round of 16
 </pre>
 </div>
 </div>
@@ -8901,7 +8900,7 @@ Attack       #4 · €118m  #2 · €149m   #6 · €197m  #4 · €298m  #8 · 
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>The other two KPIs on slide 11 (270 competitive minutes for two emerging forwards; eight takers per shoot-out rehearsal) are targets, not data.</p>
+<p>The other two targets on slide 11 (two competitive starts each for two emerging forwards; two full shoot-out rehearsals with different line-ups in the final camp) are targets, not data.</p>
 </div>
 </div>
 </div>
